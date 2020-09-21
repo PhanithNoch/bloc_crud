@@ -32,9 +32,8 @@ class _IndexPageState extends State<IndexPage> {
               int id;
               String firstname;
               String lastname;
-              String email;
-              String phone;
-              String city;
+              String age;
+              String active_date;
               return Slidable(
                 actionPane: SlidableDrawerActionPane(),
                 actionExtentRatio: 0.25,
@@ -43,11 +42,11 @@ class _IndexPageState extends State<IndexPage> {
                   child: ListTile(
                     leading: CircleAvatar(
                       backgroundColor: Colors.indigoAccent,
-                      child: Text(state.data[index].city),
+                      child: Text(state.data[index].firstName),
                       foregroundColor: Colors.white,
                     ),
                     title: Text(state.data[index].firstName),
-                    subtitle: Text(state.data[index].email),
+                    subtitle: Text(state.data[index].active_date),
                   ),
                 ),
                 secondaryActions: <Widget>[
@@ -56,22 +55,11 @@ class _IndexPageState extends State<IndexPage> {
                     color: Colors.blue,
                     icon: Icons.edit,
                     onTap: () => {
-                      id = state.data[index].id,
-                      firstname = state.data[index].firstName,
-                      lastname = state.data[index].lastName,
-                      email = state.data[index].email,
-                      phone = state.data[index].phone,
-                      city = state.data[index].city,
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => UpdatePate(
-                                    peopleId: id,
-                                    firstname: firstname,
-                                    lastname: lastname,
-                                    email: email,
-                                    phone: phone,
-                                    city: city,
+                                    people: state.data[index],
                                   )))
                     },
                   ),

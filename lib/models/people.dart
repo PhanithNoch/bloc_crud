@@ -25,24 +25,21 @@ class Data {
   int id;
   String firstName;
   String lastName;
-  String phone;
-  String email;
-  String city;
+  String age;
+  String active_date;
 
   Data({this.id,
     this.firstName,
     this.lastName,
-    this.phone,
-    this.email,
-    this.city
+    this.age,
+    this.active_date
   });
   Data.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     firstName = json['first_name'];
     lastName = json['last_name'];
-    phone = json['phone'];
-    email = json['email'];
-    city = json['city'];
+    age = json['age'];
+    active_date = json['active_date'];
 
   }
 
@@ -51,9 +48,9 @@ class Data {
     data['id'] = this.id;
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
-    data['phone'] = this.phone;
-    data['email'] = this.email;
-    data['city'] = this.city;
+    data['age'] = this.age;
+    data['active_date'] = this.active_date;
+
     return data;
   }
 }

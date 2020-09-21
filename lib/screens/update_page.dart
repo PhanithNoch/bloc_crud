@@ -3,26 +3,43 @@ import 'package:bloc_crud/models/people.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UpdatePate extends StatelessWidget {
+class UpdatePate extends StatefulWidget {
+  int peopleId;
   TextEditingController firstnameController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
-  TextEditingController cityController = TextEditingController();
-  int peopleId;
+  TextEditingController ageController = TextEditingController();
+  TextEditingController activedateController = TextEditingController();
+  UpdatePate({Data people}) {
+    this.firstnameController.text = people.firstName;
+    this.lastnameController.text = people.lastName;
+    this.ageController.text = people.age;
+    this.activedateController.text = people.active_date;
+    this.peopleId = people.id;
+  }
 
-  UpdatePate({peopleId, firstname, lastname, email, phone, city}) {
-    this.firstnameController.text = firstname;
-    this.lastnameController.text = lastname;
-    this.emailController.text = email;
-    this.phoneController.text = phone;
-    this.cityController.text = city;
-    this.peopleId = peopleId;
+  @override
+  _UpdatePateState createState() => _UpdatePateState();
+}
 
-    print(this.firstnameController.text);
+class _UpdatePateState extends State<UpdatePate> {
+
+
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
   }
 
   Data people;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,13 +52,11 @@ class UpdatePate extends StatelessWidget {
             if (state.state == true) {
               Scaffold.of(context).showSnackBar(
                   SnackBar(content: new Text("Update Successfully!")));
-
             }
             Future.delayed(const Duration(milliseconds: 1000), () {
               Navigator.pop(context);
               BlocProvider.of<PeopleBloc>(context).add(PeopleLoadingEvent());
             });
-
           }
         },
         child: ListView(
@@ -51,7 +66,7 @@ class UpdatePate extends StatelessWidget {
               height: 10,
             ),
             TextField(
-              controller: firstnameController,
+              controller: widget.firstnameController,
               cursorColor: Colors.blue,
               decoration: InputDecoration(
                 hintText: "First Name",
@@ -61,33 +76,31 @@ class UpdatePate extends StatelessWidget {
               height: 10,
             ),
             TextField(
-              controller: lastnameController,
+              controller: widget.lastnameController,
               cursorColor: Colors.blue,
               decoration: InputDecoration(
                 hintText: "Last Name",
               ),
             ),
             TextField(
-              controller: emailController,
+              controller: widget.ageController,
               cursorColor: Colors.blue,
               decoration: InputDecoration(
-                hintText: "Email",
+                hintText: "Age",
               ),
             ),
-            TextField(
-              controller: phoneController,
-              cursorColor: Colors.blue,
-              decoration: InputDecoration(
-                hintText: "Phone",
+            Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+                children: <Widget>[
+              Text("${selectedDate.toLocal()}".split(' ')[0]),
+                  SizedBox(width: 20.0,),
+              RaisedButton(
+                onPressed: () => _selectDate(context),
+                child: Text('Select date'),
               ),
-            ),
-            TextField(
-              controller: cityController,
-              cursorColor: Colors.blue,
-              decoration: InputDecoration(
-                hintText: "City",
-              ),
-            ),
+            ]),
             SizedBox(
               height: 10,
             ),
@@ -95,12 +108,11 @@ class UpdatePate extends StatelessWidget {
                 color: Colors.blue,
                 onPressed: () {
                   people = new Data(
-                      id: peopleId,
-                      firstName: firstnameController.text,
-                      lastName: lastnameController.text,
-                      email: emailController.text,
-                      phone: phoneController.text,
-                      city: cityController.text);
+                      id: widget.peopleId,
+                      firstName: widget.firstnameController.text,
+                      lastName: widget.lastnameController.text,
+                      age: widget.ageController.text,
+                      active_date: selectedDate.toIso8601String());
 
                   BlocProvider.of<PeopleBloc>(context)
                       .add(PeopleUpdateEvent(people: people));

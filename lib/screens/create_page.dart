@@ -4,12 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/people.dart';
 
-class CreatePage extends StatelessWidget {
-  final TextEditingController _firstnameController = TextEditingController();
-  final TextEditingController _lastnameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _cityController = TextEditingController();
+class CreatePage extends StatefulWidget {
+  @override
+  _CreatePageState createState() => _CreatePageState();
+}
+
+class _CreatePageState extends State<CreatePage> {
+  TextEditingController firstnameController = TextEditingController();
+  TextEditingController lastnameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController activedateController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     Data people;
@@ -35,7 +53,7 @@ class CreatePage extends StatelessWidget {
                 height: 10,
               ),
               TextField(
-                controller: _firstnameController,
+                controller: firstnameController,
                 cursorColor: Colors.blue,
                 decoration: InputDecoration(
                   hintText: "First Name",
@@ -45,33 +63,32 @@ class CreatePage extends StatelessWidget {
                 height: 10,
               ),
               TextField(
-                controller: _lastnameController,
+                controller: lastnameController,
                 cursorColor: Colors.blue,
                 decoration: InputDecoration(
                   hintText: "Last Name",
                 ),
               ),
               TextField(
-                controller: _emailController,
+                controller: ageController,
                 cursorColor: Colors.blue,
                 decoration: InputDecoration(
-                  hintText: "Email",
+                  hintText: "Age",
                 ),
               ),
-              TextField(
-                controller: _phoneController,
-                cursorColor: Colors.blue,
-                decoration: InputDecoration(
-                  hintText: "Phone",
-                ),
-              ),
-              TextField(
-                controller: _cityController,
-                cursorColor: Colors.blue,
-                decoration: InputDecoration(
-                  hintText: "City",
-                ),
-              ),
+              Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: <Widget>[
+                    Text("${selectedDate.toLocal()}".split(' ')[0]),
+                    SizedBox(
+                      width: 20.0,
+                    ),
+                    RaisedButton(
+                      onPressed: () => _selectDate(context),
+                      child: Text('Select date'),
+                    ),
+                  ]),
               SizedBox(
                 height: 10,
               ),
@@ -82,11 +99,10 @@ class CreatePage extends StatelessWidget {
                       color: Colors.blue,
                       onPressed: () {
                         people = new Data(
-                            firstName: _firstnameController.text,
-                            lastName: _lastnameController.text,
-                            email: _emailController.text,
-                            phone: _phoneController.text,
-                            city: _cityController.text);
+                            firstName: firstnameController.text,
+                            lastName: lastnameController.text,
+                            age: ageController.text,
+                            active_date: selectedDate.toString());
                         BlocProvider.of<PeopleBloc>(context)
                             .add(PeopleCreateEvent(people: people));
                       },
